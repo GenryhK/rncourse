@@ -1,80 +1,53 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
-import {connect} from 'react-redux'
+import React from 'react'
+import {Navigation} from 'react-native-navigation';
+import  { Provider } from  'react-redux';
 
-import PlaceInput from './src/components/PlaceInput/PlaceInput'
-import PlaceList from './src/components/PlaceList/PlaceList'
-import placeImg from './src/assets/oboitut.com_2927.jpg'
-import PlaceDetail from './src/components/PlaceDetail/PlaceDetail'
-import {addPlace, deletePlace, selectPlace, deselectPlace} from './src/store/actions/index'
+import AuthScreen from './src/screens/Auth/Auth';
+import SharePlaceScreen from'./src/screens/SharePlace/SharePlace'
+import FindPlaceScreen from'./src/screens/FindPlace/FindPlace'
+import SideDrawer from './src/screens/SideDrawer/SideDrawer'
+import PlaceDetailScreen from './src/screens/PlaceDetail/PlaceDetail'
+import configureStore from './src/store/configureStore'
 
-const instructions = Platform.select({
-    ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-    android:
-        'Double tap R on your keyboard to reload,\n' +
-        'Shake or press menu button for dev menu',
+const store = configureStore();
+
+//Register Screen
+
+Navigation.registerComponent('awesome-places.AuthScreen',
+    () => (props) => (
+    <Provider store={store}>
+        <AuthScreen {...props}/>
+    </Provider>
+), ()=> AuthScreen);
+Navigation.registerComponent('awesome-places.SharePlaceScreen',
+    () => (props) => (
+        <Provider store={store}>
+            <SharePlaceScreen {...props}/>
+        </Provider>
+    ), () =>SharePlaceScreen);
+Navigation.registerComponent('awesome-places.FindPlaceScreen',
+    () =>  (props) => (
+        <Provider store={store}>
+            <FindPlaceScreen {...props}/>
+        </Provider>
+    ),()=> FindPlaceScreen);
+Navigation.registerComponent('awesome-places.PlaceDetailScreen',
+    () =>  (props) => (
+        <Provider store={store}>
+            <PlaceDetailScreen {...props}/>
+        </Provider>
+    ),()=> PlaceDetailScreen);
+Navigation.registerComponent('awesome-places.SideDrawer',
+    ()=> SideDrawer);
+
+//Start a App
+Navigation.events().registerAppLaunchedListener(() => {
+    Navigation.setRoot({
+      root: {
+          component: {
+              name: 'awesome-places.AuthScreen',
+              title: 'Login'
+          }
+      }
+    })
 });
-
-type Props = {};
-
-class App extends Component<Props> {
-
-    placeAddedHandler = placeName => {
-        this.props.onAddPlace(placeName);
-    };
-
-    placeSelectedHandler = placeKey => {
-        this.props.onSelectPlace(placeKey)
-    };
-
-    placeDeletedHandler = () => {
-        this.props.onDeletePlace();
-    };
-
-    modalClosedHandler = () => {
-        this.props.onDeselectPlace()
-    };
-
-    render() {
-        return (
-            <View style={styles.container}>
-                <PlaceDetail selectedPlace={this.props.selectedPlace}
-                             onItemClose={this.modalClosedHandler}
-                             onItemDelete={this.placeDeletedHandler}/>
-                <PlaceInput onPlaceAdded={this.placeAddedHandler}/>
-                <PlaceList places={this.props.places} onItemSelected={this.placeSelectedHandler}/>
-            </View>
-        );
-    }
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 50,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-});
-
-const mapStateToProps = state => {
-    return {
-        places: state.places.places,
-        selectedPlace: state.places.selectedPlace,
-    }
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onAddPlace: (name) => dispatch(addPlace(name)),
-        onDeletePlace: () => dispatch(deletePlace()),
-        onSelectPlace: (key) => dispatch(selectPlace(key)),
-        onDeselectPlace: () => dispatch(deselectPlace())
-    }
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(App)

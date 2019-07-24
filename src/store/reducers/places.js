@@ -1,8 +1,6 @@
 import {
     ADD_PLACE,
-    DELETE_PLACE,
-    SELECT_PLACE,
-    DESELECT_PLACE
+    DELETE_PLACE
 } from '../actions/actionTypes'
 import placeImg from '../../assets/oboitut.com_2927.jpg';
 
@@ -31,18 +29,6 @@ const reducer = (state = initialState, action) => {
                 selectedPlace: null
             }
         }
-        case SELECT_PLACE:
-            return {
-                ...state,
-                selectedPlace: state.places.find((item) => {
-                    return item.key === action.placeKey
-                })
-            };
-        case DESELECT_PLACE:
-            return {
-                ...state,
-                selectedPlace: null
-            };
         default:
             return state
 

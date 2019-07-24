@@ -12,6 +12,7 @@
     "@types/react-native": "^0.60.2",
     "react": "16.8.3",
     "react-native": "0.59.10",
+    "react-native-navigation": "^3.0.0-alpha.6",
     "react-native-vector-icons": "^6.6.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2"
